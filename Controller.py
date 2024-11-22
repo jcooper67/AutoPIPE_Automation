@@ -12,8 +12,8 @@ class Controller:
     def run(self):
         self.menu.run()
 
-    def handle_user_input(self, file_path, nozzle_nodes, support_nodes, user_transform,output_path):
-        self.data_retriever = DataRetriever.DataRetriever(file_path,user_transform)
+    def handle_user_input(self, file_path, nozzle_nodes, support_nodes,output_path):
+        self.data_retriever = DataRetriever.DataRetriever(file_path)
         self.table_editor = Editor.Editor(output_path)
         print("Done")
         support_data = self.data_retriever.retrieve_support_data(support_nodes=support_nodes)

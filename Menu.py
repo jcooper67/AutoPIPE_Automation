@@ -5,18 +5,17 @@ import os
 class Menu:
     def __init__(self,controller):
         self.controller = controller
-        self.axes = 0
+        self.axes = 0     
+
     def run(self):
         # GUI window for user input
         self.root = tk.Tk()
         self.root.withdraw()
         try:
-            wd = sys._MEIPASS # Delete
+            wd = sys._MEIPASS 
         except AttributeError:
             wd = os.getcwd()
         file_path = os.path.join(wd,'files','logo.png')
-        print(file_path)
-        #icon=tk.PhotoImage(file="./files/logo.png")
         icon = tk.PhotoImage(file=file_path)
         self.root.iconphoto(True,icon)
 
@@ -48,8 +47,10 @@ class Menu:
     def add_input_fields(self, window):
         self.nozzle_input = self.create_input_field(window, "Nozzle Node Numbers (Comma or Space Separated):")
         self.support_input = self.create_input_field(window, "Support Node Numbers (Comma or Space Separated):")
-        self.transform_input = self.create_input_field(window, "Coordinate Transformation (XYZ)")
-        self.axes_input = self.create_check_button(window,"Use Local Axes")
+
+        
+        # self.transform_input = self.create_input_field(window, "Coordinate Transformation (XYZ)")
+        # self.axes_input = self.create_check_button(window,"Use Local Axes")
 
     def create_input_field(self, window, label_text):
         label = tk.Label(window, text=label_text)
@@ -58,23 +59,30 @@ class Menu:
         entry.pack(padx=10, pady=5)
         return entry
     
-    def create_check_button(self,window,label_text):
-        axes_checkbox = tk.Checkbutton(window,text = label_text,variable= self.axes)
-        axes_checkbox.pack(padx=10,pady=5)
-        return axes_checkbox
+
 
     def on_submit(self, window, file_path,output_path):
         nozzle_nodes = self.nozzle_input.get().split()
         support_nodes = self.support_input.get().split()
-        user_transform = self.transform_input.get()
 
         
 
-        self.controller.handle_user_input(file_path, nozzle_nodes, support_nodes, user_transform,output_path)
+        self.controller.handle_user_input(file_path, nozzle_nodes, support_nodes,output_path)
         
         window.destroy()
         self.root.quit()
         self.root.destroy()
+
+    def transform_submit(self,window):
+        user_transform = self.transform_input.get()
+        self.transform_string = user_transform
+        window.destroy()
+        self.root.quit()
+        self.root.destroy()
+
+    def get_transformstring(self):
+        return self.transform_string
+
     def destroy(self):
         self.root.quit()
         self.root.destroy()

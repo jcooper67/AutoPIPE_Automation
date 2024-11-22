@@ -1,19 +1,19 @@
 import pandas as pd
 import tkinter as tk
 from tkinter import messagebox
+import Popup
 import sys
 class DataRetriever:
 
-    def __init__(self,file_path,user_transform):
+    def __init__(self,file_path):
         self.file_path = file_path
         self.support_dict = {}
         self.nozzle_dict = {}
-        self.transform_string = user_transform
         self.axes = 0
-        self.process_transformation()
+        self.popup = Popup.Popup()
+        
     def retrieve_support_data(self,support_nodes):
         #Open the document and Set Up the Data Frame
-        print("Executing Retrieval")
         try:
             df = pd.read_excel(self.file_path,sheet_name = "Support_Forces")
             df.columns = df.iloc[0]
@@ -48,7 +48,7 @@ class DataRetriever:
             print(self.support_dict)
             return self.support_dict
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error44: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
@@ -58,15 +58,18 @@ class DataRetriever:
 
     def retreive_support_number(self,df,support_node):
         try:
+            try:
+                filtered_df = df[(df.iloc[:,0] == int(support_node))]
+            except:
+                filtered_df = df[(df.iloc[:,0] == (support_node))]
 
-            filtered_df = df[(df.iloc[:,0] == int(support_node))]
             if filtered_df.empty:
                 raise ValueError(f"Support node {support_node} not found in the data.")
 
             support_number = filtered_df.iloc[0]["Tag_No"]
             return support_number
         except ValueError as e:
-            print(f"Error: {e}")
+            print(f"Error33: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
@@ -80,8 +83,10 @@ class DataRetriever:
 
 
     def retrieve_max_force_by_load_case(self,df,support_node,load_case):
-        filtered_df = df[(df.iloc[:,0] == int(support_node)) & (df["Load_Combination"]== load_case)]
-
+        try:
+            filtered_df = df[(df.iloc[:,0] == int(support_node)) & (df["Load_Combination"]== load_case)]
+        except:
+            filtered_df = df[(df.iloc[:,0] == (support_node)) & (df["Load_Combination"]== load_case)]
         # Find the row with the max absolute value in the 12th column (Global_Force)
         max_index = filtered_df['Global_Force'].abs().idxmax()
         # Now get the value from the original DataFrame using the max index
@@ -97,6 +102,10 @@ class DataRetriever:
             df = df.reset_index(drop = True)
 
             for nozzle_node in nozzle_nodes:
+                self.popup.tranformation_popup(nozzle_node)
+                self.transform_string = self.popup.get_transformstring()
+                print(self.transform_string)
+                self.process_transformation()
                 self.nozzle_dict[nozzle_node] = []
                 #Gravity Load Combo
                 forces,moments = self.retrieve_forces_moments_by_load_combinations(df,nozzle_node,"Gravity{1}")
@@ -111,10 +120,9 @@ class DataRetriever:
                 combined_values = forces+moments
                 self.nozzle_dict[nozzle_node].append(combined_values)
             
-            print(self.nozzle_dict)
             return self.nozzle_dict
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error55: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
@@ -125,16 +133,19 @@ class DataRetriever:
 
     def retrieve_forces_moments_by_load_combinations(self,df,nozzle_node,load_combo):
         try:
-            filtered_df = df[(df.iloc[:,0] == int(nozzle_node)) & (df["Load_Combination"]== load_combo)]
+            try:
+                filtered_df = df[(df.iloc[:,0] == int(nozzle_node)) & (df["Load_Combination"]== load_combo)]
+            except:
+                filtered_df = df[(df.iloc[:,0] == (nozzle_node)) & (df["Load_Combination"]== load_combo)]
             if filtered_df.empty:
-                raise ValueError(f"No Data Found For Nozzle Node {nozzle_node}")
+                raise ValueError(f"No Data Found For Nozzle at point: {nozzle_node}")
             forces = filtered_df.iloc[0][["Forces_X","Forces_Y","Forces_Z"]].tolist()
             moments = filtered_df.iloc[0][["Moments_X","Moments_Y","Moments_Z"]].tolist()
-
+            print(f"Retrieving {nozzle_node}")
             forces = [round(x,0) for x in forces]
             moments = [round(x,0) for x in moments]
-            print(f"Transform String : {self.transform_string}")
             if len(self.transform_string)!=0:
+                
 
                 forces, moments = self.transform_nozzle_loads(forces,moments)
 
@@ -143,7 +154,7 @@ class DataRetriever:
 
             return forces,moments
         except ValueError as e:
-            print(f"Error: {e}")
+            print(f"Error 1: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
@@ -152,7 +163,7 @@ class DataRetriever:
             return None
         
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error 2: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window

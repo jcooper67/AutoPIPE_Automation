@@ -8,7 +8,7 @@ class Editor:
         self.doc = Document(output_path)
         self.output_path = output_path
         #Assumese the support table is the 6th table
-        self.support_table_location = 5
+        self.support_table_location = 3
 
     def update_support_table(self, support_dict):
         try:
@@ -24,7 +24,7 @@ class Editor:
                 second_row.cells[3].text = str(support_list[1])
                 second_row.cells[4].text = str(support_list[2])
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error555: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
@@ -161,7 +161,7 @@ class Editor:
 
                 seventeenth_row.cells[9].text = str(max_msr)
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error788: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
