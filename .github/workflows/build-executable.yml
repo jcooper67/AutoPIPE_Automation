@@ -3,7 +3,7 @@ name: Build Executable
 on:
   push:
     branches:
-      - main  # Trigger the workflow on push to the main branch (you can adjust the branch as needed)
+      - Main  # Trigger the workflow on push to the main branch (you can adjust the branch as needed)
 
 jobs:
   build:
