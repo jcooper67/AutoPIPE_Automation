@@ -9,7 +9,6 @@ class DataRetriever:
         self.file_path = file_path
         self.support_dict = {}
         self.nozzle_dict = {}
-        self.axes = 0
         self.popup = Popup.Popup()
         
     def retrieve_support_data(self,support_nodes):
@@ -27,7 +26,7 @@ class DataRetriever:
                 support_number = self.retreive_support_number(df=df, support_node=support_node)
 
                 if support_number is None:
-                    print(f"Skipping Invalid Support Node: {support_node}")
+                    #print(f"Skipping Invalid Support Node: {support_node}")
                     continue
 
                 self.support_dict[support_node].append(support_number)
@@ -45,10 +44,10 @@ class DataRetriever:
                     self.support_dict[support_node][2] = self.support_dict[support_node][1]
                     self.support_dict[support_node][1] = temp_value
 
-            print(self.support_dict)
+            #print(self.support_dict)
             return self.support_dict
         except Exception as e:
-            print(f"Error44: {e}")
+            print(f"Error: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
@@ -69,7 +68,7 @@ class DataRetriever:
             support_number = filtered_df.iloc[0]["Tag_No"]
             return support_number
         except ValueError as e:
-            print(f"Error33: {e}")
+            print(f"Error: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
@@ -79,7 +78,6 @@ class DataRetriever:
         except Exception as e:
             print(f"An Unexpected Error Occured: {e}")
             return None
-
 
 
     def retrieve_max_force_by_load_case(self,df,support_node,load_case):
@@ -94,41 +92,100 @@ class DataRetriever:
         global_force_value = round(global_force_value,0)
         return global_force_value
 
-    def retrieve_nozzle_data(self,nozzle_nodes):
-        try: 
-            df = pd.read_excel(self.file_path, sheet_name='Restraint_Loads')
-            df.columns = df.iloc[0]
-            df = df[1:]
-            df = df.reset_index(drop = True)
-
-            for nozzle_node in nozzle_nodes:
+    def retrieve_nozzle_data(self, nozzle_nodes):   
+        for nozzle_node in nozzle_nodes:
+            try:
+                # Transform the nozzle node data
                 self.popup.tranformation_popup(nozzle_node)
                 self.transform_string = self.popup.get_transformstring()
-                print(self.transform_string)
+                self.local_axes = self.popup.get_local_axes()
+                #print(self.transform_string)
+                #print(self.local_axes)
                 self.process_transformation()
                 self.nozzle_dict[nozzle_node] = []
-                #Gravity Load Combo
-                forces,moments = self.retrieve_forces_moments_by_load_combinations(df,nozzle_node,"Gravity{1}")
-                combined_values = forces+moments
-                self.nozzle_dict[nozzle_node].append(combined_values)
-                #Thermal 1 Load Combo
-                forces,moments = self.retrieve_forces_moments_by_load_combinations(df,nozzle_node,"Thermal 1{1}")
-                combined_values = forces+moments
-                self.nozzle_dict[nozzle_node].append(combined_values)
-                #Thermal 2 Load Combo
-                forces,moments = self.retrieve_forces_moments_by_load_combinations(df,nozzle_node,"Thermal 2{1}")
-                combined_values = forces+moments
-                self.nozzle_dict[nozzle_node].append(combined_values)
-            
-            return self.nozzle_dict
-        except Exception as e:
-            print(f"Error55: {e}")
-            # Show the error message in a Tkinter popup
-            root = tk.Tk()
-            root.withdraw()  # Hide the root window
-            messagebox.showerror("Error", str(e))
-            sys.exit()  # Exit the program
-            return None
+
+                if self.local_axes == 1:
+                    #print("In Local Axes Loop")
+                    df = pd.read_excel(self.file_path,sheet_name ='Local_Axes')
+                    df = df.iloc[:,1:]
+                    df=df.reset_index(drop=True)
+
+                    #print(df.columns)
+                    try:
+                        filtered_df = df[(df.iloc[:, 0] == int(nozzle_node))]
+                    except:
+                        filtered_df = df[(df.iloc[:, 0] == (nozzle_node))]
+
+                    if filtered_df.empty:
+                        raise ValueError(f"Nozzle Node: {nozzle_node} Not Found In Local Axes")
+                    
+                    forces, moments = self.retrieve_local_forces_moments(df, nozzle_node, "Gravity{1}")
+                    combined_values = forces + moments
+                    self.nozzle_dict[nozzle_node].append(combined_values)
+
+                    forces, moments = self.retrieve_local_forces_moments(df, nozzle_node, "Thermal  1…")
+                    combined_values = forces + moments
+                    self.nozzle_dict[nozzle_node].append(combined_values)
+
+                    forces, moments = self.retrieve_local_forces_moments(df, nozzle_node, "Thermal  2…")
+                    combined_values = forces + moments
+                    self.nozzle_dict[nozzle_node].append(combined_values)
+
+                else:
+                    # Read data from the Excel sheet
+                    df = pd.read_excel(self.file_path, sheet_name='Restraint_Loads')
+                    df.columns = df.iloc[0]
+                    df = df[1:]
+                    df = df.reset_index(drop=True)
+
+                    # Attempt to filter the dataframe based on the nozzle node
+                    try:
+                        filtered_df = df[(df.iloc[:, 0] == int(nozzle_node))]
+                    except:
+                        filtered_df = df[(df.iloc[:, 0] == (nozzle_node))]
+
+                    # If the filtered dataframe is empty, try again
+                    if filtered_df.empty:
+                        df = pd.read_excel(self.file_path, sheet_name='Forces_Moments')
+                        df.columns = df.iloc[0]
+                        df = df[1:]
+                        df = df.reset_index(drop=True)
+
+                        try:
+                            filtered_df = df[(df.iloc[:, 0] == int(nozzle_node))]
+                        except:
+                            filtered_df = df[(df.iloc[:, 0] == (nozzle_node))]
+
+                    # If still empty, handle the error gracefully
+                    if filtered_df.empty:
+                        raise ValueError(f"Nozzle Node: {nozzle_node} Not Found In Restraint_Loads or Forces_Moments")
+
+                    # Proceed to retrieve forces and moments for different load combinations
+                    forces, moments = self.retrieve_forces_moments_by_load_combinations(df, nozzle_node, "Gravity{1}")
+                    combined_values = forces + moments
+                    self.nozzle_dict[nozzle_node].append(combined_values)
+
+                    forces, moments = self.retrieve_forces_moments_by_load_combinations(df, nozzle_node, "Thermal 1{1}")
+                    combined_values = forces + moments
+                    self.nozzle_dict[nozzle_node].append(combined_values)
+
+                    forces, moments = self.retrieve_forces_moments_by_load_combinations(df, nozzle_node, "Thermal 2{1}")
+                    combined_values = forces + moments
+                    self.nozzle_dict[nozzle_node].append(combined_values)
+
+            except ValueError as e:
+                # Capture the ValueError and log the issue with the nozzle node
+                print(f"Error processing nozzle node {nozzle_node}: {str(e)}")
+                # Show the error message in a Tkinter popup
+                root = tk.Tk()
+                root.withdraw()  # Hide the root window
+                messagebox.showerror("Error", str(e))
+                sys.exit()  # Exit the program
+                return None
+
+        return self.nozzle_dict
+
+
 
 
     def retrieve_forces_moments_by_load_combinations(self,df,nozzle_node,load_combo):
@@ -141,7 +198,7 @@ class DataRetriever:
                 raise ValueError(f"No Data Found For Nozzle at point: {nozzle_node}")
             forces = filtered_df.iloc[0][["Forces_X","Forces_Y","Forces_Z"]].tolist()
             moments = filtered_df.iloc[0][["Moments_X","Moments_Y","Moments_Z"]].tolist()
-            print(f"Retrieving {nozzle_node}")
+            #print(f"Retrieving {nozzle_node}")
             forces = [round(x,0) for x in forces]
             moments = [round(x,0) for x in moments]
             if len(self.transform_string)!=0:
@@ -154,7 +211,7 @@ class DataRetriever:
 
             return forces,moments
         except ValueError as e:
-            print(f"Error 1: {e}")
+            print(f"Error: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
@@ -163,7 +220,7 @@ class DataRetriever:
             return None
         
         except Exception as e:
-            print(f"Error 2: {e}")
+            print(f"Error: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
@@ -171,6 +228,46 @@ class DataRetriever:
             sys.exit()  # Exit the program
             return None
 
+
+    def retrieve_local_forces_moments(self,df,nozzle_node,load_combo):
+        try:
+            try:
+                filtered_df = df[(df.iloc[:,0] == int(nozzle_node)) & (df["Combinati…"]== load_combo)]
+            except:
+                filtered_df = df[(df.iloc[:,0] == (nozzle_node)) & (df["Combinati…"]== load_combo)]
+            if filtered_df.empty:
+                raise ValueError(f"No Data Found For Nozzle at point: {nozzle_node}")
+            forces = filtered_df.iloc[0][["LocalFX lbf","LocalFY lbf","LocalFZ lbf"]].tolist()
+            moments = filtered_df.iloc[0][["LocalMX ft-lb","LocalMY ft-lb","LocalMZ ft-lb"]].tolist()
+            #print(f"Retrieving {nozzle_node}")
+            forces = [round(x,0) for x in forces]
+            moments = [round(x,0) for x in moments]
+            if len(self.transform_string)!=0:
+                
+
+                forces, moments = self.transform_nozzle_loads(forces,moments)
+
+            forces = [round(x,0) for x in forces]
+            moments = [round(x,0) for x in moments]
+
+            return forces,moments
+        except ValueError as e:
+            print(f"Error: {e}")
+            # Show the error message in a Tkinter popup
+            root = tk.Tk()
+            root.withdraw()  # Hide the root window
+            messagebox.showerror("Error", str(e))
+            sys.exit()  # Exit the program
+            return None
+        
+        except Exception as e:
+            print(f"Error: {e}")
+            # Show the error message in a Tkinter popup
+            root = tk.Tk()
+            root.withdraw()  # Hide the root window
+            messagebox.showerror("Error", str(e))
+            sys.exit()  # Exit the program
+            return None
     
 
     def process_transformation(self):

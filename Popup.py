@@ -4,7 +4,7 @@ import sys
 import os
 class Popup:
     def __init__(self):
-        self.axes = False
+        self.snapshot_local_axes = 0
         
     def tranformation_popup(self,nozzle_number):
         # GUI window for user input
@@ -13,6 +13,7 @@ class Popup:
         input_window=tk.Toplevel(self.root)
 
         input_window.title(f"Transformation for Nozzle at point: {nozzle_number} ")
+        self.local_axes = tk.IntVar(input_window)
 
         # Add input fields
         self.transform_input = self.create_input_field(input_window, f"Coordinate Transformation for Nozzle at point: {nozzle_number} (XYZ)")
@@ -21,6 +22,8 @@ class Popup:
         # Add submit button
         submit_button = tk.Button(input_window, text="Submit", command=lambda: self.transform_submit(input_window))
         submit_button.pack(padx=10, pady=10)
+
+        input_window.protocol("WM_DELETE_WINDOW", lambda: self.transform_submit(input_window))
 
         input_window.mainloop()
 
@@ -33,20 +36,23 @@ class Popup:
         return entry
     
     def create_check_button(self,window,label_text):
-        axes_checkbox = tk.Checkbutton(window,text = label_text,variable= self.axes)
+        axes_checkbox = tk.Checkbutton(window,text = label_text,variable= self.local_axes)
         axes_checkbox.pack(padx=10,pady=5)
         return axes_checkbox    
 
     def transform_submit(self,window):
         user_transform = self.transform_input.get()
-        print(f"Transform String : {user_transform}")
+        #print(f"Transform String : {user_transform}")
         self.transform_string = user_transform
+        self.snapshot_local_axes=self.local_axes.get()
         window.destroy()
         self.root.quit()
         self.root.destroy()
 
     def get_transformstring(self):
         return self.transform_string
+    def get_local_axes(self):
+        return self.snapshot_local_axes
 
     def destroy(self):
         self.root.quit()

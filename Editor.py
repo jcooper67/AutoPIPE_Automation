@@ -7,15 +7,14 @@ class Editor:
     def __init__(self,output_path):
         self.doc = Document(output_path)
         self.output_path = output_path
-        #Assumese the support table is the 6th table
-        self.support_table_location = 3
+        #Assumes the support table is the 16th table
+        self.support_table_location = 15
 
     def update_support_table(self, support_dict):
         try:
             table = self.doc.tables[self.support_table_location]
             for i, key in enumerate(support_dict):
                 support_list = support_dict[key]
-                #print (support_list)
                 first_row = table.rows[i*3+1]
                 second_row = table.rows[i*3+2]
                 third_row = table.rows[i*3+3]
@@ -24,7 +23,7 @@ class Editor:
                 second_row.cells[3].text = str(support_list[1])
                 second_row.cells[4].text = str(support_list[2])
         except Exception as e:
-            print(f"Error555: {e}")
+            print(f"Error: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
@@ -37,6 +36,7 @@ class Editor:
     def update_nozzle_tables(self, nozzle_dict):
         try:
             for i, key in enumerate(nozzle_dict):
+
                 nozzle_list = nozzle_dict[key]
                 table = self.doc.tables[i]
                 
@@ -122,13 +122,25 @@ class Editor:
                 thermal1_list = nozzle_list[1]
                 thermal2_list = nozzle_list[2]
 
-                envelope_thermal = [thermal1_list[i] if abs(thermal1_list[i]) >= abs(thermal2_list[i]) else thermal2_list[i] for i in range(len(thermal1_list))]
-                
-                hot_list = [deadweight_list[i]+envelope_thermal[i] for i in range(len(deadweight_list))]
+                hot_list = []
 
-                hot_fsr = deadweight_fsr + max(abs(th1_fsr),abs(th2_fsr))
+                for i in range(len(thermal1_list)):
+                    dead_th1 = deadweight_list[i]+thermal1_list[i]
+                    dead_th2 = deadweight_list[i]+thermal2_list[i]
 
-                hot_msr = deadweight_msr + max(abs(th1_msr),abs(th2_msr))
+                    if abs(dead_th1)>abs(dead_th2):
+                        hot_list.append(dead_th1)
+                    else:
+                        hot_list.append(dead_th2)
+                #print(f"hot_list: {hot_list}")
+
+                ## FSR and MSR to be calculated as resultant of hot x and hot z
+                #hot_fsr = deadweight_fsr + max(abs(th1_fsr),abs(th2_fsr))
+                hot_fsr = math.sqrt((hot_list[1])**2+(hot_list[2])**2)
+                hot_fsr = round(hot_fsr,0)
+                hot_msr = math.sqrt((hot_list[4])**2+(hot_list[5])**2)
+                hot_msr = round(hot_msr,0)
+                #hot_msr = deadweight_msr + max(abs(th1_msr),abs(th2_msr))
 
 
                 fifthteenth_row.cells[2].text = str(hot_list[0])
@@ -161,7 +173,7 @@ class Editor:
 
                 seventeenth_row.cells[9].text = str(max_msr)
         except Exception as e:
-            print(f"Error788: {e}")
+            print(f"Error: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window

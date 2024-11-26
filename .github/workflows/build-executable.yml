@@ -36,9 +36,6 @@ jobs:
       - name: List dist directory contents
         run: dir dist
 
-
-
-
       # Step 6: Upload the EXE as an artifact
       - name: Upload EXE as artifact
         uses: actions/upload-artifact@v2
