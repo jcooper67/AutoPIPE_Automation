@@ -25,6 +25,19 @@ class Popup:
 
         input_window.protocol("WM_DELETE_WINDOW", lambda: self.transform_submit(input_window))
 
+        window_width = 400  
+        window_height = 150  
+
+        screen_width = input_window.winfo_screenwidth()  
+        screen_height = input_window.winfo_screenheight()  
+
+        position_top = int(screen_height / 2 - window_height / 2)
+        position_right = int(screen_width / 2 - window_width / 2)
+
+        
+        input_window.geometry(f'{window_width}x{window_height}+{position_right}+{position_top}')
+
+
         input_window.mainloop()
 
    

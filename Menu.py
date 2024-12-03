@@ -41,16 +41,21 @@ class Menu:
             # Add submit button
             submit_button = tk.Button(input_window, text="Submit", command=lambda: self.on_submit(input_window, file_path,output_path))
             submit_button.pack(padx=10, pady=10)
+            window_width = 400  
+            window_height = 175  
 
+            screen_width = input_window.winfo_screenwidth()  
+            screen_height = input_window.winfo_screenheight() 
+
+            position_top = int(screen_height / 2 - window_height / 2)
+            position_right = int(screen_width / 2 - window_width / 2)
+
+            input_window.geometry(f'{window_width}x{window_height}+{position_right}+{position_top}')
             input_window.mainloop()
 
     def add_input_fields(self, window):
         self.nozzle_input = self.create_input_field(window, "Nozzle Node Numbers (Comma or Space Separated):")
         self.support_input = self.create_input_field(window, "Support Node Numbers (Comma or Space Separated):")
-
-        
-        # self.transform_input = self.create_input_field(window, "Coordinate Transformation (XYZ)")
-        # self.axes_input = self.create_check_button(window,"Use Local Axes")
 
     def create_input_field(self, window, label_text):
         label = tk.Label(window, text=label_text)
@@ -64,11 +69,7 @@ class Menu:
     def on_submit(self, window, file_path,output_path):
         nozzle_nodes = self.nozzle_input.get().split()
         support_nodes = self.support_input.get().split()
-
-        
-
         self.controller.handle_user_input(file_path, nozzle_nodes, support_nodes,output_path)
-        
         window.destroy()
         self.root.quit()
         self.root.destroy()

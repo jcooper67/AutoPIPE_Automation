@@ -51,7 +51,7 @@ class Editor:
 
                 #Calc Deadweight FSR
                 deadweight_fsr = math.sqrt(((nozzle_list[0][1])**2)+((nozzle_list[0][2])**2))
-                deadweight_fsr = round(deadweight_fsr,0)
+                deadweight_fsr = int(round(deadweight_fsr,0))
                 twelfth_row.cells[5].text = str(deadweight_fsr)
 
 
@@ -61,7 +61,7 @@ class Editor:
                 twelfth_row.cells[8].text = str(nozzle_list[0][5])
 
                 deadweight_msr = math.sqrt(((nozzle_list[0][4])**2)+((nozzle_list[0][5])**2))
-                deadweight_msr = round(deadweight_msr,0)
+                deadweight_msr = int(round(deadweight_msr,0))
 
                 twelfth_row.cells[9].text = str(deadweight_msr)
 
@@ -72,7 +72,7 @@ class Editor:
                 thirteenth_row.cells[4].text = str(nozzle_list[1][2])
 
                 th1_fsr = math.sqrt((nozzle_list[1][1])**2+(nozzle_list[1][2])**2)
-                th1_fsr = round(th1_fsr,0)
+                th1_fsr = int(round(th1_fsr,0))
 
                 thirteenth_row.cells[5].text = str(th1_fsr)
 
@@ -84,7 +84,7 @@ class Editor:
                 thirteenth_row.cells[8].text = str(nozzle_list[1][5])
 
                 th1_msr = math.sqrt((nozzle_list[1][4])**2+(nozzle_list[1][5])**2)
-                th1_msr = round(th1_msr,0)
+                th1_msr = int(round(th1_msr,0))
 
                 thirteenth_row.cells[9].text = str(th1_msr)
 
@@ -98,7 +98,7 @@ class Editor:
                 fourteenth_row.cells[4].text = str(nozzle_list[2][2])
 
                 th2_fsr = math.sqrt((nozzle_list[2][1])**2+(nozzle_list[2][2])**2)
-                th2_fsr = round(th2_fsr,0)
+                th2_fsr = int(round(th2_fsr,0))
 
                 fourteenth_row.cells[5].text = str(th2_fsr)
 
@@ -109,7 +109,7 @@ class Editor:
                 fourteenth_row.cells[8].text = str(nozzle_list[2][5])
 
                 th2_msr = math.sqrt((nozzle_list[2][4])**2+(nozzle_list[2][5])**2)
-                th2_msr = round(th2_msr,0)
+                th2_msr = int(round(th2_msr,0))
 
                 fourteenth_row.cells[9].text = str(th2_msr)
 
@@ -137,9 +137,9 @@ class Editor:
                 ## FSR and MSR to be calculated as resultant of hot x and hot z
                 #hot_fsr = deadweight_fsr + max(abs(th1_fsr),abs(th2_fsr))
                 hot_fsr = math.sqrt((hot_list[1])**2+(hot_list[2])**2)
-                hot_fsr = round(hot_fsr,0)
+                hot_fsr = int(round(hot_fsr,0))
                 hot_msr = math.sqrt((hot_list[4])**2+(hot_list[5])**2)
-                hot_msr = round(hot_msr,0)
+                hot_msr = int(round(hot_msr,0))
                 #hot_msr = deadweight_msr + max(abs(th1_msr),abs(th2_msr))
 
 

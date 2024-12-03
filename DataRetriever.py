@@ -89,7 +89,7 @@ class DataRetriever:
         max_index = filtered_df['Global_Force'].abs().idxmax()
         # Now get the value from the original DataFrame using the max index
         global_force_value = df.loc[max_index,'Global_Force']
-        global_force_value = round(global_force_value,0)
+        global_force_value = int(round(global_force_value,0))
         return global_force_value
 
     def retrieve_nozzle_data(self, nozzle_nodes):   
@@ -199,15 +199,19 @@ class DataRetriever:
             forces = filtered_df.iloc[0][["Forces_X","Forces_Y","Forces_Z"]].tolist()
             moments = filtered_df.iloc[0][["Moments_X","Moments_Y","Moments_Z"]].tolist()
             #print(f"Retrieving {nozzle_node}")
-            forces = [round(x,0) for x in forces]
-            moments = [round(x,0) for x in moments]
+            # forces = [round(x,0) for x in forces]
+            # moments = [round(x,0) for x in moments]
+            forces = [int(round(x,0)) for x in forces]
+            moments = [int(round(x,0)) for x in moments]
             if len(self.transform_string)!=0:
                 
 
                 forces, moments = self.transform_nozzle_loads(forces,moments)
 
-            forces = [round(x,0) for x in forces]
-            moments = [round(x,0) for x in moments]
+            #forces = [round(x,0) for x in forces]
+            #moments = [round(x,0) for x in moments]
+            forces = [int(round(x,0)) for x in forces]
+            moments = [int(round(x,0)) for x in moments]
 
             return forces,moments
         except ValueError as e:
@@ -240,15 +244,15 @@ class DataRetriever:
             forces = filtered_df.iloc[0][["LocalFX lbf","LocalFY lbf","LocalFZ lbf"]].tolist()
             moments = filtered_df.iloc[0][["LocalMX ft-lb","LocalMY ft-lb","LocalMZ ft-lb"]].tolist()
             #print(f"Retrieving {nozzle_node}")
-            forces = [round(x,0) for x in forces]
-            moments = [round(x,0) for x in moments]
+            forces = [int(round(x,0)) for x in forces]
+            moments = [int(round(x,0)) for x in moments]
             if len(self.transform_string)!=0:
                 
 
                 forces, moments = self.transform_nozzle_loads(forces,moments)
 
-            forces = [round(x,0) for x in forces]
-            moments = [round(x,0) for x in moments]
+            forces = [int(round(x,0)) for x in forces]
+            moments = [int(round(x,0)) for x in moments]
 
             return forces,moments
         except ValueError as e:
