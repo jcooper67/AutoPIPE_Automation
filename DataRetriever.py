@@ -20,6 +20,7 @@ class DataRetriever:
             df = df.reset_index(drop = True)
 
             for support_node in support_nodes:
+
                 self.support_dict[support_node] = []
 
                 
@@ -29,20 +30,32 @@ class DataRetriever:
                     continue
 
                 self.support_dict[support_node].append(support_number)
+                self.support_dict[support_node].append([])
+                self.support_dict[support_node].append([])
+                self.support_dict[support_node].append([])
+                #print(self.support_dict[support_node])
 
 
-                global_force_value = self.retrieve_max_force_by_load_case(df=df, support_node= support_node,load_case = 'GRT{1}')
-                self.support_dict[support_node].append(global_force_value)
+                forces = self.retrieve_forces_by_load_case(df=df, support_node= support_node,load_case = 'GRT{1}')
+                self.support_dict[support_node][1].append(forces[0])
+                self.support_dict[support_node][2].append(forces[1])
+                self.support_dict[support_node][3].append(forces[2])
+        
 
-                global_force_value = self.retrieve_max_force_by_load_case(df=df, support_node= support_node,load_case = 'GRT{2}')
-                self.support_dict[support_node].append(global_force_value)
+                forces = self.retrieve_forces_by_load_case(df=df, support_node= support_node,load_case = 'GRT{2}')
+                self.support_dict[support_node][1].append(forces[0])
+                self.support_dict[support_node][2].append(forces[1])
+                self.support_dict[support_node][3].append(forces[2])
 
-            
-                if abs(self.support_dict[support_node][1])<abs(self.support_dict[support_node][2]):
-                    temp_value = self.support_dict[support_node][2]
-                    self.support_dict[support_node][2] = self.support_dict[support_node][1]
-                    self.support_dict[support_node][1] = temp_value
+                sorted_x = sorted(self.support_dict[support_node][1], key = abs,reverse=True)
+                sorted_y = sorted(self.support_dict[support_node][2], key = abs, reverse = True)
+                sorted_z = sorted(self.support_dict[support_node][3], key = abs, reverse = True)
 
+                self.support_dict[support_node][1] = sorted_x
+                self.support_dict[support_node][2] = sorted_y
+                self.support_dict[support_node][3] = sorted_z
+
+                
             #print(self.support_dict)
             return self.support_dict
         except Exception as e:
@@ -79,17 +92,18 @@ class DataRetriever:
             return None
 
 
-    def retrieve_max_force_by_load_case(self,df,support_node,load_case):
+    def retrieve_forces_by_load_case(self,df,support_node,load_case):
         try:
             filtered_df = df[(df.iloc[:,0] == int(support_node)) & (df["Load_Combination"]== load_case)]
         except:
             filtered_df = df[(df.iloc[:,0] == (support_node)) & (df["Load_Combination"]== load_case)]
-        # Find the row with the max absolute value in the 12th column (Global_Force)
-        max_index = filtered_df['Global_Force'].abs().idxmax()
-        # Now get the value from the original DataFrame using the max index
-        global_force_value = df.loc[max_index,'Global_Force']
-        global_force_value = int(round(global_force_value,0))
-        return global_force_value
+
+        forces = []
+        forces.append(int(round(filtered_df.iloc[0]['Global_Force'])))
+        forces.append(int(round(filtered_df.iloc[1]['Global_Force'])))
+        forces.append(int(round(filtered_df.iloc[2]['Global_Force'])))
+
+        return forces
 
     def retrieve_nozzle_data(self, nozzle_nodes):   
         for nozzle_node in nozzle_nodes:

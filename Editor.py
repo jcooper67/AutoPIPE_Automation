@@ -16,12 +16,17 @@ class Editor:
             for i, key in enumerate(support_dict):
                 support_list = support_dict[key]
                 first_row = table.rows[i*3+1]
-                second_row = table.rows[i*3+2]
-                third_row = table.rows[i*3+3]
                 first_row.cells[0].text = key
                 first_row.cells[1].text = str(support_list[0])
-                second_row.cells[3].text = str(support_list[1])
-                second_row.cells[4].text = str(support_list[2])
+
+                for j in range(1,4):
+                    if support_list[j][0] == 0:
+                        continue
+                    else:
+                        row = table.rows[i*3+j]
+                        row.cells[3].text = str(support_list[j][0])
+                        row.cells[4].text = str(support_list[j][1])
+
         except Exception as e:
             print(f"Error: {e}")
             # Show the error message in a Tkinter popup
