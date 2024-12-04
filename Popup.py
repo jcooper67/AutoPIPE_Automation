@@ -17,7 +17,7 @@ class Popup:
 
         # Add input fields
         self.transform_input = self.create_input_field(input_window, f"Coordinate Transformation for Nozzle at point: {nozzle_number} (XYZ)")
-        self.check_box = self.create_check_button(input_window, "Use Local Axes")
+        #self.check_box = self.create_check_button(input_window, "Use Local Axes")
 
         # Add submit button
         submit_button = tk.Button(input_window, text="Submit", command=lambda: self.transform_submit(input_window))
@@ -26,7 +26,7 @@ class Popup:
         input_window.protocol("WM_DELETE_WINDOW", lambda: self.transform_submit(input_window))
 
         window_width = 400  
-        window_height = 150  
+        window_height = 125  
 
         screen_width = input_window.winfo_screenwidth()  
         screen_height = input_window.winfo_screenheight()  

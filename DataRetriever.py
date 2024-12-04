@@ -26,7 +26,6 @@ class DataRetriever:
                 support_number = self.retreive_support_number(df=df, support_node=support_node)
 
                 if support_number is None:
-                    #print(f"Skipping Invalid Support Node: {support_node}")
                     continue
 
                 self.support_dict[support_node].append(support_number)
@@ -99,18 +98,13 @@ class DataRetriever:
                 self.popup.tranformation_popup(nozzle_node)
                 self.transform_string = self.popup.get_transformstring()
                 self.local_axes = self.popup.get_local_axes()
-                #print(self.transform_string)
-                #print(self.local_axes)
                 self.process_transformation()
                 self.nozzle_dict[nozzle_node] = []
 
                 if self.local_axes == 1:
-                    #print("In Local Axes Loop")
                     df = pd.read_excel(self.file_path,sheet_name ='Local_Axes')
                     df = df.iloc[:,1:]
                     df=df.reset_index(drop=True)
-
-                    #print(df.columns)
                     try:
                         filtered_df = df[(df.iloc[:, 0] == int(nozzle_node))]
                     except:
@@ -144,7 +138,7 @@ class DataRetriever:
                     except:
                         filtered_df = df[(df.iloc[:, 0] == (nozzle_node))]
 
-                    # If the filtered dataframe is empty, try again
+                    # If the filtered dataframe for Restraint_Loads is empty, try Forces_Moments
                     if filtered_df.empty:
                         df = pd.read_excel(self.file_path, sheet_name='Forces_Moments')
                         df.columns = df.iloc[0]
@@ -156,7 +150,7 @@ class DataRetriever:
                         except:
                             filtered_df = df[(df.iloc[:, 0] == (nozzle_node))]
 
-                    # If still empty, handle the error gracefully
+                    # If still empty, throw an error becuase the Nozzle number is not valid
                     if filtered_df.empty:
                         raise ValueError(f"Nozzle Node: {nozzle_node} Not Found In Restraint_Loads or Forces_Moments")
 
@@ -198,9 +192,6 @@ class DataRetriever:
                 raise ValueError(f"No Data Found For Nozzle at point: {nozzle_node}")
             forces = filtered_df.iloc[0][["Forces_X","Forces_Y","Forces_Z"]].tolist()
             moments = filtered_df.iloc[0][["Moments_X","Moments_Y","Moments_Z"]].tolist()
-            #print(f"Retrieving {nozzle_node}")
-            # forces = [round(x,0) for x in forces]
-            # moments = [round(x,0) for x in moments]
             forces = [int(round(x,0)) for x in forces]
             moments = [int(round(x,0)) for x in moments]
             if len(self.transform_string)!=0:
@@ -208,8 +199,6 @@ class DataRetriever:
 
                 forces, moments = self.transform_nozzle_loads(forces,moments)
 
-            #forces = [round(x,0) for x in forces]
-            #moments = [round(x,0) for x in moments]
             forces = [int(round(x,0)) for x in forces]
             moments = [int(round(x,0)) for x in moments]
 
@@ -297,6 +286,8 @@ class DataRetriever:
                     i+=1
                 self.swap_order = swap_order
                 self.swap_scalar = swap_scalar
+
+                
     def transform_nozzle_loads(self,forces,moments):
         new_forces = []
         new_moments = []
