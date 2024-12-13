@@ -2,6 +2,8 @@ import pytest
 import sys
 import os
 import pandas as pd
+from unittest.mock import patch
+import tkinter as tk
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -58,6 +60,32 @@ def test_retrieve_support_data1():
         # You can add more nodes here for validation
     
     print("Test passed: All support node values are correct.")
+
+
+def test_retrieve_support_data_sheet_not_found():
+    # Create an instance of the DataRetriever with the path to the Excel file
+    path = "C:/Users/COOPERJ/Documents/Projects/AutoPIPE_Automation/Sample Files/HSG_R2_No_Support_Forces.xlsx"
+    data_retriever = DataRetriever(path)
+
+    # Support nodes to test
+    support_nodes = ["17", "18", "29", "36", "39", "43A", "50", "62", "72", "78", "81", "99", "TS1", "TS2", "TS3", "TS4"]
+
+    # Expect the program to exit when the sheet is not found
+    with pytest.raises(SystemExit):  # This ensures the program exits due to sys.exit()
+        # Mock the messagebox.showerror to simulate user clicking "OK"
+        with patch.object(tk.messagebox, 'showerror') as mock_showerror:
+            # Make the mock showerror function immediately return (simulating the "OK" click)
+            mock_showerror.return_value = None
+            
+            # Call the method which should raise an error due to the missing sheet
+            data_retriever.retrieve_support_data(support_nodes)
+
+            # Assert that showerror was called with the expected error message
+            mock_showerror.assert_called_with("Error", "Error: 'Support_Forces' is not in list - The sheet 'Support_Forces' was not found in the Excel file.")
+
+            # Assert that the result is None, since the program should exit
+            # After sys.exit() is called, nothing will be returned, so this is expected.
+            assert data_retriever.retrieve_support_data(support_nodes) is None
 
 
 

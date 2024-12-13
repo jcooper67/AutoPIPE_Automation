@@ -47,6 +47,19 @@ class DataRetriever:
                 self.support_dict[support_node][2].append(forces[1])
                 self.support_dict[support_node][3].append(forces[2])
 
+
+                forces = self.retrieve_forces_by_load_case(df=df, support_node= support_node,load_case = 'GRT{3}')
+                self.support_dict[support_node][1].append(forces[0])
+                self.support_dict[support_node][2].append(forces[1])
+                self.support_dict[support_node][3].append(forces[2])
+
+                forces = self.retrieve_forces_by_load_case(df=df, support_node= support_node,load_case = 'GRT{4}')
+                self.support_dict[support_node][1].append(forces[0])
+                self.support_dict[support_node][2].append(forces[1])
+                self.support_dict[support_node][3].append(forces[2])
+
+
+
                 sorted_x = sorted(self.support_dict[support_node][1], key = abs,reverse=True)
                 sorted_y = sorted(self.support_dict[support_node][2], key = abs, reverse = True)
                 sorted_z = sorted(self.support_dict[support_node][3], key = abs, reverse = True)
@@ -58,6 +71,20 @@ class DataRetriever:
                 
             #print(self.support_dict)
             return self.support_dict
+        
+        except ValueError as e:
+        # Specific handling for missing sheet or any other value error
+            error_message = f"Error: {str(e)} - The sheet 'Support_Forces' was not found in the Excel file."
+            print(error_message)
+
+            # Show the error message in a Tkinter popup
+            root = tk.Tk()
+            root.withdraw()  # Hide the root window
+            messagebox.showerror("Error", error_message)
+            
+            # Exit the program after showing the error message
+            sys.exit()
+
         except Exception as e:
             print(f"Error: {e}")
             # Show the error message in a Tkinter popup
@@ -115,71 +142,43 @@ class DataRetriever:
                 self.process_transformation()
                 self.nozzle_dict[nozzle_node] = []
 
-                if self.local_axes == 1:
-                    df = pd.read_excel(self.file_path,sheet_name ='Local_Axes')
-                    df = df.iloc[:,1:]
-                    df=df.reset_index(drop=True)
-                    try:
-                        filtered_df = df[(df.iloc[:, 0] == int(nozzle_node))]
-                    except:
-                        filtered_df = df[(df.iloc[:, 0] == (nozzle_node))]
 
-                    if filtered_df.empty:
-                        raise ValueError(f"Nozzle Node: {nozzle_node} Not Found In Local Axes")
-                    
-                    forces, moments = self.retrieve_local_forces_moments(df, nozzle_node, "Gravity{1}")
-                    combined_values = forces + moments
-                    self.nozzle_dict[nozzle_node].append(combined_values)
+                # Read data from the Excel sheet
+                df = pd.read_excel(self.file_path, sheet_name='Forces_Moments')
+                df.columns = df.iloc[0]
+                df = df[1:]
+                df = df.reset_index(drop=True)
 
-                    forces, moments = self.retrieve_local_forces_moments(df, nozzle_node, "Thermal  1…")
-                    combined_values = forces + moments
-                    self.nozzle_dict[nozzle_node].append(combined_values)
+                # Attempt to filter the dataframe based on the nozzle node
+                try:
+                    filtered_df = df[(df.iloc[:, 0] == int(nozzle_node))]
+                except:
+                    filtered_df = df[(df.iloc[:, 0] == (nozzle_node))]
 
-                    forces, moments = self.retrieve_local_forces_moments(df, nozzle_node, "Thermal  2…")
-                    combined_values = forces + moments
-                    self.nozzle_dict[nozzle_node].append(combined_values)
+                # If still empty, throw an error becuase the Nozzle number is not valid
+                if filtered_df.empty:
+                    raise ValueError(f"Nozzle Node: {nozzle_node} Not Found In Restraint_Loads or Forces_Moments")
 
-                else:
-                    # Read data from the Excel sheet
-                    df = pd.read_excel(self.file_path, sheet_name='Restraint_Loads')
-                    df.columns = df.iloc[0]
-                    df = df[1:]
-                    df = df.reset_index(drop=True)
+                # Proceed to retrieve forces and moments for different load combinations
+                forces, moments = self.retrieve_forces_moments_by_load_combinations(df, nozzle_node, "Gravity{1}")
+                combined_values = forces + moments
+                self.nozzle_dict[nozzle_node].append(combined_values)
 
-                    # Attempt to filter the dataframe based on the nozzle node
-                    try:
-                        filtered_df = df[(df.iloc[:, 0] == int(nozzle_node))]
-                    except:
-                        filtered_df = df[(df.iloc[:, 0] == (nozzle_node))]
+                forces, moments = self.retrieve_forces_moments_by_load_combinations(df, nozzle_node, "Thermal 1{1}")
+                combined_values = forces + moments
+                self.nozzle_dict[nozzle_node].append(combined_values)
 
-                    # If the filtered dataframe for Restraint_Loads is empty, try Forces_Moments
-                    if filtered_df.empty:
-                        df = pd.read_excel(self.file_path, sheet_name='Forces_Moments')
-                        df.columns = df.iloc[0]
-                        df = df[1:]
-                        df = df.reset_index(drop=True)
+                forces, moments = self.retrieve_forces_moments_by_load_combinations(df, nozzle_node, "Thermal 2{1}")
+                combined_values = forces + moments
+                self.nozzle_dict[nozzle_node].append(combined_values)
 
-                        try:
-                            filtered_df = df[(df.iloc[:, 0] == int(nozzle_node))]
-                        except:
-                            filtered_df = df[(df.iloc[:, 0] == (nozzle_node))]
+                forces, moments = self.retrieve_forces_moments_by_load_combinations(df, nozzle_node, "Thermal 3{1}")
+                combined_values = forces + moments
+                self.nozzle_dict[nozzle_node].append(combined_values)
 
-                    # If still empty, throw an error becuase the Nozzle number is not valid
-                    if filtered_df.empty:
-                        raise ValueError(f"Nozzle Node: {nozzle_node} Not Found In Restraint_Loads or Forces_Moments")
-
-                    # Proceed to retrieve forces and moments for different load combinations
-                    forces, moments = self.retrieve_forces_moments_by_load_combinations(df, nozzle_node, "Gravity{1}")
-                    combined_values = forces + moments
-                    self.nozzle_dict[nozzle_node].append(combined_values)
-
-                    forces, moments = self.retrieve_forces_moments_by_load_combinations(df, nozzle_node, "Thermal 1{1}")
-                    combined_values = forces + moments
-                    self.nozzle_dict[nozzle_node].append(combined_values)
-
-                    forces, moments = self.retrieve_forces_moments_by_load_combinations(df, nozzle_node, "Thermal 2{1}")
-                    combined_values = forces + moments
-                    self.nozzle_dict[nozzle_node].append(combined_values)
+                forces, moments = self.retrieve_forces_moments_by_load_combinations(df, nozzle_node, "Thermal 4{1}")
+                combined_values = forces + moments
+                self.nozzle_dict[nozzle_node].append(combined_values)
 
             except ValueError as e:
                 # Capture the ValueError and log the issue with the nozzle node

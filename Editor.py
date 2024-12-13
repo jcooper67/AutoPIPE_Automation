@@ -25,7 +25,7 @@ class Editor:
                     else:
                         row = table.rows[i*3+j]
                         row.cells[3].text = str(support_list[j][0])
-                        row.cells[4].text = str(support_list[j][1])
+                        row.cells[4].text = str(support_list[j][3])
 
         except Exception as e:
             print(f"Error: {e}")
@@ -118,25 +118,76 @@ class Editor:
 
                 fourteenth_row.cells[9].text = str(th2_msr)
 
+
+                #Th-3 Forces
+                fifteenth_row = table.rows[14]
+                fifteenth_row.cells[2].text = str(nozzle_list[2][0])
+                fifteenth_row.cells[3].text = str(nozzle_list[2][1])
+                fifteenth_row.cells[4].text = str(nozzle_list[2][2])
+
+                th2_fsr = math.sqrt((nozzle_list[2][1])**2+(nozzle_list[2][2])**2)
+                th2_fsr = int(round(th2_fsr,0))
+
+                fifteenth_row.cells[5].text = str(th2_fsr)
+
+                
+                #Th-3 Moments
+                fifteenth_row.cells[6].text = str(nozzle_list[2][3])
+                fifteenth_row.cells[7].text = str(nozzle_list[2][4])
+                fifteenth_row.cells[8].text = str(nozzle_list[2][5])
+
+                th2_msr = math.sqrt((nozzle_list[2][4])**2+(nozzle_list[2][5])**2)
+                th2_msr = int(round(th2_msr,0))
+
+                fifteenth_row.cells[9].text = str(th2_msr)
+
+
+                #Th-4 Forces
+                sixteenth_row = table.rows[15]
+                sixteenth_row.cells[2].text = str(nozzle_list[2][0])
+                sixteenth_row.cells[3].text = str(nozzle_list[2][1])
+                sixteenth_row.cells[4].text = str(nozzle_list[2][2])
+
+                th2_fsr = math.sqrt((nozzle_list[2][1])**2+(nozzle_list[2][2])**2)
+                th2_fsr = int(round(th2_fsr,0))
+
+                sixteenth_row.cells[5].text = str(th2_fsr)
+
+                
+                #Th-4 Moments
+                sixteenth_row.cells[6].text = str(nozzle_list[2][3])
+                sixteenth_row.cells[7].text = str(nozzle_list[2][4])
+                sixteenth_row.cells[8].text = str(nozzle_list[2][5])
+
+                th2_msr = math.sqrt((nozzle_list[2][4])**2+(nozzle_list[2][5])**2)
+                th2_msr = int(round(th2_msr,0))
+
+                sixteenth_row.cells[9].text = str(th2_msr)
+
+
+
                 #Calculate Hot(Weight + Envelope of Expansion Cases)
 
-                fifthteenth_row = table.rows[14]
+                seventeenth_row = table.rows[16]
 
                 deadweight_list = nozzle_list[0]
 
                 thermal1_list = nozzle_list[1]
                 thermal2_list = nozzle_list[2]
 
-                hot_list = []
+                hot_list = [a + b for a, b in zip(deadweight_list, thermal2_list)]
 
-                for i in range(len(thermal1_list)):
-                    dead_th1 = deadweight_list[i]+thermal1_list[i]
-                    dead_th2 = deadweight_list[i]+thermal2_list[i]
 
-                    if abs(dead_th1)>abs(dead_th2):
-                        hot_list.append(dead_th1)
-                    else:
-                        hot_list.append(dead_th2)
+                # hot_list = []
+
+                # for i in range(len(thermal1_list)):
+                #     dead_th1 = deadweight_list[i]+thermal1_list[i]
+                #     dead_th2 = deadweight_list[i]+thermal2_list[i]
+
+                #     if abs(dead_th1)>abs(dead_th2):
+                #         hot_list.append(dead_th1)
+                #     else:
+                #         hot_list.append(dead_th2)
                 #print(f"hot_list: {hot_list}")
 
                 ## FSR and MSR to be calculated as resultant of hot x and hot z
@@ -148,35 +199,35 @@ class Editor:
                 #hot_msr = deadweight_msr + max(abs(th1_msr),abs(th2_msr))
 
 
-                fifthteenth_row.cells[2].text = str(hot_list[0])
-                fifthteenth_row.cells[3].text = str(hot_list[1])
-                fifthteenth_row.cells[4].text = str(hot_list[2])
-                fifthteenth_row.cells[5].text = str(hot_fsr)
+                seventeenth_row.cells[2].text = str(hot_list[0])
+                seventeenth_row.cells[3].text = str(hot_list[1])
+                seventeenth_row.cells[4].text = str(hot_list[2])
+                seventeenth_row.cells[5].text = str(hot_fsr)
                 
                 #Th-2 Moments
-                fifthteenth_row.cells[6].text = str(hot_list[3])
-                fifthteenth_row.cells[7].text = str(hot_list[4])
-                fifthteenth_row.cells[8].text = str(hot_list[5])
-                fifthteenth_row.cells[9].text = str(hot_msr)
+                seventeenth_row.cells[6].text = str(hot_list[3])
+                seventeenth_row.cells[7].text = str(hot_list[4])
+                seventeenth_row.cells[8].text = str(hot_list[5])
+                seventeenth_row.cells[9].text = str(hot_msr)
 
 
             #Calc Maximum of DW,Hot
 
                 max_list = [max(abs(hot_list), abs(deadweight_list)) for hot_list, deadweight_list in zip(hot_list, deadweight_list)]
 
-                seventeenth_row = table.rows[16]
+                nineteenth_row = table.rows[18]
 
-                seventeenth_row.cells[2].text = str(max_list[0])
+                nineteenth_row.cells[2].text = str(max_list[0])
 
                 max_fsr = max(abs(deadweight_fsr),abs(hot_fsr))
 
-                seventeenth_row.cells[5].text = str(max_fsr)
+                nineteenth_row.cells[5].text = str(max_fsr)
 
-                seventeenth_row.cells[6].text = str(max_list[3])
+                nineteenth_row.cells[6].text = str(max_list[3])
 
                 max_msr = max(abs(deadweight_msr),abs(hot_msr))
 
-                seventeenth_row.cells[9].text = str(max_msr)
+                nineteenth_row.cells[9].text = str(max_msr)
         except Exception as e:
             print(f"Error: {e}")
             # Show the error message in a Tkinter popup
