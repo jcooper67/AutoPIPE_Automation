@@ -106,35 +106,20 @@ class Editor:
                 thermal2_list = nozzle_list[2]
 
 
-                # if self.number_thermal_cases == 2:
-                #     hot_list = [a + b for a, b in zip(deadweight_list, thermal2_list)]
-                # else:
-                #     thermal_list = []
-                #     for i in range(self.number_thermal_cases):
-                #         thermal_list.append(nozzle_list[i+1])
-
-                #     thermal_list.pop(0)
-                #     hot_list = [max(abs(value) for value in values) for values in zip(*thermal_list)]
-                #     hot_list = [a+b for a,b in zip(deadweight_list,hot_list)]
-
                 thermal_list = []
                 for i in range(self.number_thermal_cases):
                     thermal_list.append(nozzle_list[i+1])
 
-                #thermal_list.pop(0)
-                #hot_list = [max(abs(value) for value in values) for values in zip(*thermal_list)]
                 hot_list = [max(values, key=abs) for values in zip(*thermal_list)]
 
                 hot_list = [a+b for a,b in zip(deadweight_list,hot_list)]
 
 
                 ## FSR and MSR to be calculated as resultant of hot x and hot z
-                #hot_fsr = deadweight_fsr + max(abs(th1_fsr),abs(th2_fsr))
                 hot_fsr = math.sqrt((hot_list[1])**2+(hot_list[2])**2)
                 hot_fsr = int(round(hot_fsr,0))
                 hot_msr = math.sqrt((hot_list[4])**2+(hot_list[5])**2)
                 hot_msr = int(round(hot_msr,0))
-                #hot_msr = deadweight_msr + max(abs(th1_msr),abs(th2_msr))
 
 
                 eighteenth_row.cells[2].text = str(hot_list[0])
