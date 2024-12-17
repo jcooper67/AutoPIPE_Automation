@@ -28,11 +28,11 @@ class Editor:
                         row.cells[4].text = str(support_list[j][1])
 
         except Exception as e:
-            print(f"Error12: {e}")
+            print(f"Error: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
-            messagebox.showerror("Error12", str(e))
+            messagebox.showerror("Error", str(e))
             sys.exit()  # Exit the program
             return None
             
@@ -152,11 +152,11 @@ class Editor:
 
                 twentieth_row.cells[9].text = str(max_msr)
         except Exception as e:
-            print(f"Error11: {e}")
+            print(f"Error: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
-            messagebox.showerror("Error11", str(e))
+            messagebox.showerror("Error", str(e))
             sys.exit()  # Exit the program
             return None
         
