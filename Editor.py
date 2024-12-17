@@ -98,7 +98,7 @@ class Editor:
 
                 #Calculate Hot(Weight + Envelope of Expansion Cases)
 
-                eighteenth_row = table.rows[17]
+                fifteenth_row = table.rows[14]
 
                 deadweight_list = nozzle_list[0]
 
@@ -137,35 +137,35 @@ class Editor:
                 #hot_msr = deadweight_msr + max(abs(th1_msr),abs(th2_msr))
 
 
-                eighteenth_row.cells[2].text = str(hot_list[0])
-                eighteenth_row.cells[3].text = str(hot_list[1])
-                eighteenth_row.cells[4].text = str(hot_list[2])
-                eighteenth_row.cells[5].text = str(hot_fsr)
+                fifteenth_row.cells[2].text = str(hot_list[0])
+                fifteenth_row.cells[3].text = str(hot_list[1])
+                fifteenth_row.cells[4].text = str(hot_list[2])
+                fifteenth_row.cells[5].text = str(hot_fsr)
                 
                 #Th-2 Moments
-                eighteenth_row.cells[6].text = str(hot_list[3])
-                eighteenth_row.cells[7].text = str(hot_list[4])
-                eighteenth_row.cells[8].text = str(hot_list[5])
-                eighteenth_row.cells[9].text = str(hot_msr)
+                fifteenth_row.cells[6].text = str(hot_list[3])
+                fifteenth_row.cells[7].text = str(hot_list[4])
+                fifteenth_row.cells[8].text = str(hot_list[5])
+                fifteenth_row.cells[9].text = str(hot_msr)
 
 
             #Calc Maximum of DW,Hot
 
                 max_list = [max(abs(hot_list), abs(deadweight_list)) for hot_list, deadweight_list in zip(hot_list, deadweight_list)]
 
-                twentieth_row = table.rows[19]
+                seventeenth_row = table.rows[16]
 
-                twentieth_row.cells[2].text = str(max_list[0])
+                seventeenth_row.cells[2].text = str(max_list[0])
 
                 max_fsr = max(abs(deadweight_fsr),abs(hot_fsr))
 
-                twentieth_row.cells[5].text = str(max_fsr)
+                seventeenth_row.cells[5].text = str(max_fsr)
 
-                twentieth_row.cells[6].text = str(max_list[3])
+                seventeenth_row.cells[6].text = str(max_list[3])
 
                 max_msr = max(abs(deadweight_msr),abs(hot_msr))
 
-                twentieth_row.cells[9].text = str(max_msr)
+                seventeenth_row.cells[9].text = str(max_msr)
         except Exception as e:
             print(f"Error11: {e}")
             # Show the error message in a Tkinter popup
