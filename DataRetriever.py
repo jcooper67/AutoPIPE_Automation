@@ -47,13 +47,7 @@ class DataRetriever:
                 self.support_dict[support_node].append([])
                 self.support_dict[support_node].append([])
                 self.support_dict[support_node].append([])
-
-                # forces = self.retrieve_forces_by_load_case(df=df, support_node= support_node,load_case = 'GRT{1}')
-                # self.support_dict[support_node][1].append(forces[0])
-                # self.support_dict[support_node][2].append(forces[1])
-                # self.support_dict[support_node][3].append(forces[2])
-        
-
+     
 
                 for i in range(unique_grts):
                     forces = self.retrieve_forces_by_load_case(df=df, support_node=support_node, load_case=f'GRT{{{i+1}}}')
@@ -76,23 +70,23 @@ class DataRetriever:
         
         except ValueError as e:
         # Specific handling for missing sheet or any other value error
-            error_message = f"Error7: {str(e)} - The sheet 'Support_Forces' was not found in the Excel file."
+            error_message = f"Error: {str(e)} - The sheet 'Support_Forces' was not found in the Excel file."
             print(error_message)
 
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
-            messagebox.showerror("Error6", error_message)
+            messagebox.showerror("Error", error_message)
             
             # Exit the program after showing the error message
             sys.exit()
 
         except Exception as e:
-            print(f"Error8: {e}")
+            print(f"Error: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
-            messagebox.showerror("Error8", str(e))
+            messagebox.showerror("Error", str(e))
             sys.exit()  # Exit the program
             return None
 
@@ -109,15 +103,15 @@ class DataRetriever:
             support_number = filtered_df.iloc[0]["Tag_No"]
             return support_number
         except ValueError as e:
-            print(f"Error9: {e}")
+            print(f"Error: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
-            messagebox.showerror("Error9", str(e))
+            messagebox.showerror("Error", str(e))
             sys.exit()  # Exit the program
             return None
         except Exception as e:
-            print(f"An Unexpected Error10 Occured: {e}")
+            print(f"An Unexpected Error Occured: {e}")
             return None
 
 
@@ -172,29 +166,14 @@ class DataRetriever:
                     combined_values = forces + moments
                     self.nozzle_dict[nozzle_node].append(combined_values)
 
-                # forces, moments = self.retrieve_forces_moments_by_load_combinations(df, nozzle_node, "Thermal 1{1}")
-                # combined_values = forces + moments
-                # self.nozzle_dict[nozzle_node].append(combined_values)
-
-                # forces, moments = self.retrieve_forces_moments_by_load_combinations(df, nozzle_node, "Thermal 2{1}")
-                # combined_values = forces + moments
-                # self.nozzle_dict[nozzle_node].append(combined_values)
-
-                # forces, moments = self.retrieve_forces_moments_by_load_combinations(df, nozzle_node, "Thermal 3{1}")
-                # combined_values = forces + moments
-                # self.nozzle_dict[nozzle_node].append(combined_values)
-
-                # forces, moments = self.retrieve_forces_moments_by_load_combinations(df, nozzle_node, "Thermal 4{1}")
-                # combined_values = forces + moments
-                # self.nozzle_dict[nozzle_node].append(combined_values)
 
             except ValueError as e:
                 # Capture the ValueError and log the issue with the nozzle node
-                print(f"Error14 processing nozzle node {nozzle_node}: {str(e)}")
+                print(f"Error processing nozzle node {nozzle_node}: {str(e)}")
                 # Show the error message in a Tkinter popup
                 root = tk.Tk()
                 root.withdraw()  # Hide the root window
-                messagebox.showerror("Error14", str(e))
+                messagebox.showerror("Error", str(e))
                 sys.exit()  # Exit the program
                 return None
 
@@ -228,7 +207,7 @@ class DataRetriever:
 
             return forces,moments
         except ValueError as e:
-            print(f"Error1: {e}")
+            print(f"Error: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
@@ -237,7 +216,7 @@ class DataRetriever:
             return None
         
         except Exception as e:
-            print(f"Error2: {e}")
+            print(f"Error: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
@@ -269,7 +248,7 @@ class DataRetriever:
 
             return forces,moments
         except ValueError as e:
-            print(f"Error3: {e}")
+            print(f"Error: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
@@ -278,7 +257,7 @@ class DataRetriever:
             return None
         
         except Exception as e:
-            print(f"Error4: {e}")
+            print(f"Error: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
