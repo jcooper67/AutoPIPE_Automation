@@ -70,112 +70,52 @@ class Editor:
 
                 twelfth_row.cells[9].text = str(deadweight_msr)
 
-                #Th-1 Forces
-                thirteenth_row = table.rows[12]
-                thirteenth_row.cells[2].text = str(nozzle_list[1][0])
-                thirteenth_row.cells[3].text = str(nozzle_list[1][1])
-                thirteenth_row.cells[4].text = str(nozzle_list[1][2])
 
-                th1_fsr = math.sqrt((nozzle_list[1][1])**2+(nozzle_list[1][2])**2)
-                th1_fsr = int(round(th1_fsr,0))
+                for i in range(self.number_thermal_cases):
+                    row = table.rows[12+i]
 
-                thirteenth_row.cells[5].text = str(th1_fsr)
+                    #Forces
+                    row.cells[2].text = str(nozzle_list[1][0])
+                    row.cells[3].text = str(nozzle_list[1][1])
+                    row.cells[4].text = str(nozzle_list[1][2])
 
+                    th1_fsr = math.sqrt((nozzle_list[1][1])**2+(nozzle_list[1][2])**2)
+                    th1_fsr = int(round(th1_fsr,0))
 
-
-                #Th-1 Moments
-                thirteenth_row.cells[6].text = str(nozzle_list[1][3])
-                thirteenth_row.cells[7].text = str(nozzle_list[1][4])
-                thirteenth_row.cells[8].text = str(nozzle_list[1][5])
-
-                th1_msr = math.sqrt((nozzle_list[1][4])**2+(nozzle_list[1][5])**2)
-                th1_msr = int(round(th1_msr,0))
-
-                thirteenth_row.cells[9].text = str(th1_msr)
+                    row.cells[5].text = str(th1_fsr)
 
 
+                    #Moments
 
+                    row.cells[6].text = str(nozzle_list[1][3])
+                    row.cells[7].text = str(nozzle_list[1][4])
+                    row.cells[8].text = str(nozzle_list[1][5])
 
-                #Th-2 Forces
-                fourteenth_row = table.rows[13]
-                fourteenth_row.cells[2].text = str(nozzle_list[2][0])
-                fourteenth_row.cells[3].text = str(nozzle_list[2][1])
-                fourteenth_row.cells[4].text = str(nozzle_list[2][2])
-
-                th2_fsr = math.sqrt((nozzle_list[2][1])**2+(nozzle_list[2][2])**2)
-                th2_fsr = int(round(th2_fsr,0))
-
-                fourteenth_row.cells[5].text = str(th2_fsr)
-
-                
-                #Th-2 Moments
-                fourteenth_row.cells[6].text = str(nozzle_list[2][3])
-                fourteenth_row.cells[7].text = str(nozzle_list[2][4])
-                fourteenth_row.cells[8].text = str(nozzle_list[2][5])
-
-                th2_msr = math.sqrt((nozzle_list[2][4])**2+(nozzle_list[2][5])**2)
-                th2_msr = int(round(th2_msr,0))
-
-                fourteenth_row.cells[9].text = str(th2_msr)
-
-
-                #Th-3 Forces
-                fifteenth_row = table.rows[14]
-                fifteenth_row.cells[2].text = str(nozzle_list[2][0])
-                fifteenth_row.cells[3].text = str(nozzle_list[2][1])
-                fifteenth_row.cells[4].text = str(nozzle_list[2][2])
-
-                th2_fsr = math.sqrt((nozzle_list[2][1])**2+(nozzle_list[2][2])**2)
-                th2_fsr = int(round(th2_fsr,0))
-
-                fifteenth_row.cells[5].text = str(th2_fsr)
-
-                
-                #Th-3 Moments
-                fifteenth_row.cells[6].text = str(nozzle_list[2][3])
-                fifteenth_row.cells[7].text = str(nozzle_list[2][4])
-                fifteenth_row.cells[8].text = str(nozzle_list[2][5])
-
-                th2_msr = math.sqrt((nozzle_list[2][4])**2+(nozzle_list[2][5])**2)
-                th2_msr = int(round(th2_msr,0))
-
-                fifteenth_row.cells[9].text = str(th2_msr)
-
-
-                #Th-4 Forces
-                sixteenth_row = table.rows[15]
-                sixteenth_row.cells[2].text = str(nozzle_list[2][0])
-                sixteenth_row.cells[3].text = str(nozzle_list[2][1])
-                sixteenth_row.cells[4].text = str(nozzle_list[2][2])
-
-                th2_fsr = math.sqrt((nozzle_list[2][1])**2+(nozzle_list[2][2])**2)
-                th2_fsr = int(round(th2_fsr,0))
-
-                sixteenth_row.cells[5].text = str(th2_fsr)
-
-                
-                #Th-4 Moments
-                sixteenth_row.cells[6].text = str(nozzle_list[2][3])
-                sixteenth_row.cells[7].text = str(nozzle_list[2][4])
-                sixteenth_row.cells[8].text = str(nozzle_list[2][5])
-
-                th2_msr = math.sqrt((nozzle_list[2][4])**2+(nozzle_list[2][5])**2)
-                th2_msr = int(round(th2_msr,0))
-
-                sixteenth_row.cells[9].text = str(th2_msr)
-
+                    th1_msr = math.sqrt((nozzle_list[1][4])**2+(nozzle_list[1][5])**2)
+                    th1_msr = int(round(th1_msr,0))
+                    row.cells[9].text = str(th1_msr)
 
 
                 #Calculate Hot(Weight + Envelope of Expansion Cases)
 
-                seventeenth_row = table.rows[16]
+                eighteenth_row = table.rows[17]
 
                 deadweight_list = nozzle_list[0]
 
                 thermal1_list = nozzle_list[1]
                 thermal2_list = nozzle_list[2]
 
-                hot_list = [a + b for a, b in zip(deadweight_list, thermal2_list)]
+                if self.number_thermal_cases == 2:
+                    hot_list = [a + b for a, b in zip(deadweight_list, thermal2_list)]
+                else:
+                    thermal_list = []
+                    for i in range(self.number_thermal_cases):
+                        thermal_list.append(nozzle_list[i+1])
+
+                    thermal_list.pop(0)
+                    hot_list = [max(abs(value) for value in values) for values in zip(*thermal_list)]
+                    hot_list = [a+b for a,b in zip(deadweight_list,hot_list)]
+
 
 
                 # hot_list = []
@@ -199,35 +139,35 @@ class Editor:
                 #hot_msr = deadweight_msr + max(abs(th1_msr),abs(th2_msr))
 
 
-                seventeenth_row.cells[2].text = str(hot_list[0])
-                seventeenth_row.cells[3].text = str(hot_list[1])
-                seventeenth_row.cells[4].text = str(hot_list[2])
-                seventeenth_row.cells[5].text = str(hot_fsr)
+                eighteenth_row.cells[2].text = str(hot_list[0])
+                eighteenth_row.cells[3].text = str(hot_list[1])
+                eighteenth_row.cells[4].text = str(hot_list[2])
+                eighteenth_row.cells[5].text = str(hot_fsr)
                 
                 #Th-2 Moments
-                seventeenth_row.cells[6].text = str(hot_list[3])
-                seventeenth_row.cells[7].text = str(hot_list[4])
-                seventeenth_row.cells[8].text = str(hot_list[5])
-                seventeenth_row.cells[9].text = str(hot_msr)
+                eighteenth_row.cells[6].text = str(hot_list[3])
+                eighteenth_row.cells[7].text = str(hot_list[4])
+                eighteenth_row.cells[8].text = str(hot_list[5])
+                eighteenth_row.cells[9].text = str(hot_msr)
 
 
             #Calc Maximum of DW,Hot
 
                 max_list = [max(abs(hot_list), abs(deadweight_list)) for hot_list, deadweight_list in zip(hot_list, deadweight_list)]
 
-                nineteenth_row = table.rows[18]
+                twentieth_row = table.rows[19]
 
-                nineteenth_row.cells[2].text = str(max_list[0])
+                twentieth_row.cells[2].text = str(max_list[0])
 
                 max_fsr = max(abs(deadweight_fsr),abs(hot_fsr))
 
-                nineteenth_row.cells[5].text = str(max_fsr)
+                twentieth_row.cells[5].text = str(max_fsr)
 
-                nineteenth_row.cells[6].text = str(max_list[3])
+                twentieth_row.cells[6].text = str(max_list[3])
 
                 max_msr = max(abs(deadweight_msr),abs(hot_msr))
 
-                nineteenth_row.cells[9].text = str(max_msr)
+                twentieth_row.cells[9].text = str(max_msr)
         except Exception as e:
             print(f"Error: {e}")
             # Show the error message in a Tkinter popup
@@ -236,6 +176,9 @@ class Editor:
             messagebox.showerror("Error", str(e))
             sys.exit()  # Exit the program
             return None
+        
+    def set_number_thermal_cases(self,num_cases):
+        self.number_thermal_cases = num_cases
             
 
     def save_document(self):
