@@ -28,11 +28,11 @@ class Editor:
                         row.cells[4].text = str(support_list[j][1])
 
         except Exception as e:
-            print(f"Error12: {e}")
+            print(f"Error: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
-            messagebox.showerror("Error12", str(e))
+            messagebox.showerror("Error", str(e))
             sys.exit()  # Exit the program
             return None
             
@@ -129,12 +129,10 @@ class Editor:
 
 
                 ## FSR and MSR to be calculated as resultant of hot x and hot z
-                #hot_fsr = deadweight_fsr + max(abs(th1_fsr),abs(th2_fsr))
                 hot_fsr = math.sqrt((hot_list[1])**2+(hot_list[2])**2)
                 hot_fsr = int(round(hot_fsr,0))
                 hot_msr = math.sqrt((hot_list[4])**2+(hot_list[5])**2)
                 hot_msr = int(round(hot_msr,0))
-                #hot_msr = deadweight_msr + max(abs(th1_msr),abs(th2_msr))
 
 
                 fifteenth_row.cells[2].text = str(hot_list[0])
@@ -167,11 +165,11 @@ class Editor:
 
                 seventeenth_row.cells[9].text = str(max_msr)
         except Exception as e:
-            print(f"Error11: {e}")
+            print(f"Error: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
-            messagebox.showerror("Error11", str(e))
+            messagebox.showerror("Error", str(e))
             sys.exit()  # Exit the program
             return None
         
