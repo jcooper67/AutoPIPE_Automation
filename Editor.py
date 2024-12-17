@@ -25,14 +25,14 @@ class Editor:
                     else:
                         row = table.rows[i*3+j]
                         row.cells[3].text = str(support_list[j][0])
-                        row.cells[4].text = str(support_list[j][3])
+                        row.cells[4].text = str(support_list[j][1])
 
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error12: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
-            messagebox.showerror("Error", str(e))
+            messagebox.showerror("Error12", str(e))
             sys.exit()  # Exit the program
             return None
             
@@ -75,11 +75,11 @@ class Editor:
                     row = table.rows[12+i]
 
                     #Forces
-                    row.cells[2].text = str(nozzle_list[1][0])
-                    row.cells[3].text = str(nozzle_list[1][1])
-                    row.cells[4].text = str(nozzle_list[1][2])
+                    row.cells[2].text = str(nozzle_list[i+1][0])
+                    row.cells[3].text = str(nozzle_list[i+1][1])
+                    row.cells[4].text = str(nozzle_list[i+1][2])
 
-                    th1_fsr = math.sqrt((nozzle_list[1][1])**2+(nozzle_list[1][2])**2)
+                    th1_fsr = math.sqrt((nozzle_list[i+1][1])**2+(nozzle_list[i+1][2])**2)
                     th1_fsr = int(round(th1_fsr,0))
 
                     row.cells[5].text = str(th1_fsr)
@@ -105,30 +105,28 @@ class Editor:
                 thermal1_list = nozzle_list[1]
                 thermal2_list = nozzle_list[2]
 
-                if self.number_thermal_cases == 2:
-                    hot_list = [a + b for a, b in zip(deadweight_list, thermal2_list)]
-                else:
-                    thermal_list = []
-                    for i in range(self.number_thermal_cases):
-                        thermal_list.append(nozzle_list[i+1])
 
-                    thermal_list.pop(0)
-                    hot_list = [max(abs(value) for value in values) for values in zip(*thermal_list)]
-                    hot_list = [a+b for a,b in zip(deadweight_list,hot_list)]
+                # if self.number_thermal_cases == 2:
+                #     hot_list = [a + b for a, b in zip(deadweight_list, thermal2_list)]
+                # else:
+                #     thermal_list = []
+                #     for i in range(self.number_thermal_cases):
+                #         thermal_list.append(nozzle_list[i+1])
 
+                #     thermal_list.pop(0)
+                #     hot_list = [max(abs(value) for value in values) for values in zip(*thermal_list)]
+                #     hot_list = [a+b for a,b in zip(deadweight_list,hot_list)]
 
+                thermal_list = []
+                for i in range(self.number_thermal_cases):
+                    thermal_list.append(nozzle_list[i+1])
 
-                # hot_list = []
+                #thermal_list.pop(0)
+                #hot_list = [max(abs(value) for value in values) for values in zip(*thermal_list)]
+                hot_list = [max(values, key=abs) for values in zip(*thermal_list)]
 
-                # for i in range(len(thermal1_list)):
-                #     dead_th1 = deadweight_list[i]+thermal1_list[i]
-                #     dead_th2 = deadweight_list[i]+thermal2_list[i]
+                hot_list = [a+b for a,b in zip(deadweight_list,hot_list)]
 
-                #     if abs(dead_th1)>abs(dead_th2):
-                #         hot_list.append(dead_th1)
-                #     else:
-                #         hot_list.append(dead_th2)
-                #print(f"hot_list: {hot_list}")
 
                 ## FSR and MSR to be calculated as resultant of hot x and hot z
                 #hot_fsr = deadweight_fsr + max(abs(th1_fsr),abs(th2_fsr))
@@ -169,11 +167,11 @@ class Editor:
 
                 twentieth_row.cells[9].text = str(max_msr)
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error11: {e}")
             # Show the error message in a Tkinter popup
             root = tk.Tk()
             root.withdraw()  # Hide the root window
-            messagebox.showerror("Error", str(e))
+            messagebox.showerror("Error11", str(e))
             sys.exit()  # Exit the program
             return None
         

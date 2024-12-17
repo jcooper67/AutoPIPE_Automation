@@ -20,11 +20,9 @@ class DataRetriever:
             df = df.reset_index(drop = True)
 
             # Extract the numeric part of the 'GRT{i}' strings
-            df['numeric_part'] = df['Load_Combination'].str.extract(r'GRT(\d+)')
-
+            df['numeric_part'] = df['Load_Combination'].str.extract(r'GRT\{(\d+)\}')
             # Count the number of unique 'GRT{i}' entries
             unique_grts = df['numeric_part'].nunique()
-            print(unique_grts)
 
 
             df['numeric_part'] = df['Load_Combination'].str.extract(r'Thermal (\d+){1}')
@@ -32,7 +30,6 @@ class DataRetriever:
             # Count the number of unique 'i' values
             self.number_thermal_cases = df['numeric_part'].nunique()
 
-            print(f"Number of unique Thermal{{i}} entries: {self.number_thermal_cases}")
 
             
 
@@ -50,8 +47,6 @@ class DataRetriever:
                 self.support_dict[support_node].append([])
                 self.support_dict[support_node].append([])
                 self.support_dict[support_node].append([])
-                #print(self.support_dict[support_node])
-
 
                 # forces = self.retrieve_forces_by_load_case(df=df, support_node= support_node,load_case = 'GRT{1}')
                 # self.support_dict[support_node][1].append(forces[0])
@@ -59,24 +54,8 @@ class DataRetriever:
                 # self.support_dict[support_node][3].append(forces[2])
         
 
-                # forces = self.retrieve_forces_by_load_case(df=df, support_node= support_node,load_case = 'GRT{2}')
-                # self.support_dict[support_node][1].append(forces[0])
-                # self.support_dict[support_node][2].append(forces[1])
-                # self.support_dict[support_node][3].append(forces[2])
-
-
-                # forces = self.retrieve_forces_by_load_case(df=df, support_node= support_node,load_case = 'GRT{3}')
-                # self.support_dict[support_node][1].append(forces[0])
-                # self.support_dict[support_node][2].append(forces[1])
-                # self.support_dict[support_node][3].append(forces[2])
-
-                # forces = self.retrieve_forces_by_load_case(df=df, support_node= support_node,load_case = 'GRT{4}')
-                # self.support_dict[support_node][1].append(forces[0])
-                # self.support_dict[support_node][2].append(forces[1])
-                # self.support_dict[support_node][3].append(forces[2])
 
                 for i in range(unique_grts):
-                    print(i)
                     forces = self.retrieve_forces_by_load_case(df=df, support_node=support_node, load_case=f'GRT{{{i+1}}}')
                     self.support_dict[support_node][1].append(forces[0])
                     self.support_dict[support_node][2].append(forces[1])
@@ -211,11 +190,11 @@ class DataRetriever:
 
             except ValueError as e:
                 # Capture the ValueError and log the issue with the nozzle node
-                print(f"Error processing nozzle node {nozzle_node}: {str(e)}")
+                print(f"Error14 processing nozzle node {nozzle_node}: {str(e)}")
                 # Show the error message in a Tkinter popup
                 root = tk.Tk()
                 root.withdraw()  # Hide the root window
-                messagebox.showerror("Error", str(e))
+                messagebox.showerror("Error14", str(e))
                 sys.exit()  # Exit the program
                 return None
 
