@@ -54,8 +54,8 @@ class Menu:
             input_window.mainloop()
 
     def add_input_fields(self, window):
-        self.nozzle_input = self.create_input_field(window, "Nozzle Node Numbers (Comma or Space Separated):")
-        self.support_input = self.create_input_field(window, "Support Node Numbers (Comma or Space Separated):")
+        self.nozzle_input = self.create_input_field(window, "Nozzle Node Numbers (Space Separated):")
+        self.support_input = self.create_input_field(window, "Support Node Numbers (Space Separated):")
 
     def create_input_field(self, window, label_text):
         label = tk.Label(window, text=label_text)
