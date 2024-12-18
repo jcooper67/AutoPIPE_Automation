@@ -111,10 +111,12 @@ class Editor:
                     thermal_list.append(nozzle_list[i+1])
 
                 hot_list = [max(values, key=abs) for values in zip(*thermal_list)]
+                print(hot_list)
 
                 #hot_list = [a+b for a,b in zip(deadweight_list,hot_list)]
 
                 hot_list = [a + b if abs(a + b) >= abs(a) else a for a, b in zip(deadweight_list, hot_list)]
+                
 
 
                 ## FSR and MSR to be calculated as resultant of hot x and hot z
