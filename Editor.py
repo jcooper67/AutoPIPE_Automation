@@ -87,11 +87,11 @@ class Editor:
 
                     #Moments
 
-                    row.cells[6].text = str(nozzle_list[1][3])
-                    row.cells[7].text = str(nozzle_list[1][4])
-                    row.cells[8].text = str(nozzle_list[1][5])
+                    row.cells[6].text = str(nozzle_list[i+1][3])
+                    row.cells[7].text = str(nozzle_list[i+1][4])
+                    row.cells[8].text = str(nozzle_list[i+1][5])
 
-                    th1_msr = math.sqrt((nozzle_list[1][4])**2+(nozzle_list[1][5])**2)
+                    th1_msr = math.sqrt((nozzle_list[i+1][4])**2+(nozzle_list[i+1][5])**2)
                     th1_msr = int(round(th1_msr,0))
                     row.cells[9].text = str(th1_msr)
 
@@ -112,7 +112,9 @@ class Editor:
 
                 hot_list = [max(values, key=abs) for values in zip(*thermal_list)]
 
-                hot_list = [a+b for a,b in zip(deadweight_list,hot_list)]
+                #hot_list = [a+b for a,b in zip(deadweight_list,hot_list)]
+
+                hot_list = [a + b if abs(a + b) >= abs(a) else a for a, b in zip(deadweight_list, hot_list)]
 
 
                 ## FSR and MSR to be calculated as resultant of hot x and hot z
